@@ -1,0 +1,44 @@
+<!-- templates/transcript_request.html -->
+{% extends "base_layout.html" %}
+
+{% block title %}Request Transcript{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto py-8 px-4 rounded-md ">
+    <h1 class="text-1xl sm:text-2xl md:text-2xl lg:text-2xl font-bold mb-6">Request Transcript</h1>
+    <form id="transcript-form" action="{% url 'edit_transcript' transcript_request.id %}" method="post" class="space-y-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div style="column-gap: 0.5rem;" class="flex flex-1 gap-x-2">
+            <div class="font-serif font-semibold">Total Cost :</div>
+           <div id="total-cost" class="text-gray-700 font-medium">{{form.instance.total_cost}}</div>
+        </div>
+        <div class="flex justify-between">        
+            <button type="button" id="submit-request" {% if transcript_request.payment_status == "PAID" %}disabled{% endif %} class="bg-green-600 text-white font-medium py-2 px-4 rounded hover:bg-green-700">Re-Submit Request</button>
+        <a href="{% url 'transcript_request_history' %}" type="button" class="bg-gray-500 text-white font-medium py-2 px-4 rounded-md hover:bg-gray-600">Back</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const numberOfCopiesInput = document.querySelector('input[name="number_of_transcripts"]');
+        const totalCostField = document.getElementById('total-cost');
+        const submitRequestButton = document.getElementById('submit-request');
+        const form = document.getElementById('transcript-form');
+        const costPerCopy = 10;
+
+        numberOfCopiesInput.addEventListener('input', function() {
+            const numberOfCopies = parseInt(this.value) || 0;
+            const totalCost = numberOfCopies * costPerCopy;
+            totalCostField.textContent = `${totalCost}`;
+        });
+
+        submitRequestButton.addEventListener('click', function() {
+            form.submit();
+        });
+    });
+</script>
+{% endblock %}

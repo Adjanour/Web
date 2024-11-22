@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35111.106
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeleX", "TeleX.csproj", "{403520E7-D7E8-4DDE-BA58-1E5B7B296CCD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{403520E7-D7E8-4DDE-BA58-1E5B7B296CCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{403520E7-D7E8-4DDE-BA58-1E5B7B296CCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{403520E7-D7E8-4DDE-BA58-1E5B7B296CCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{403520E7-D7E8-4DDE-BA58-1E5B7B296CCD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {04B3A99F-0FCF-4258-8F83-624D9FDD4BF1}
+	EndGlobalSection
+EndGlobal

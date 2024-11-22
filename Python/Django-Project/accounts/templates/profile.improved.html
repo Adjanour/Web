@@ -1,0 +1,219 @@
+
+{% extends "base_layout.html" %} 
+{% block title %}Profile{% endblock title %} 
+{% load static %}
+{% block content %}
+<div class="mx-auto w-full max-w-3xl mb-2">
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        <strong>Error!</strong> Please correct the following errors:
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li>{{ field }}</li>
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    <div class="w-full mx-auto mt-2 flex">
+      <nav aria-label="Progress bar for the multi-step process" class="mx-auto text-lg w-full">
+          <ol role="list" class="flex mx-auto w-full">
+              {% for step in steps %}
+              <li class="relative px-8 sm:pr-12 md:pr-12 progress-item w-full mx-auto">
+                  <span style="z-index: 1; align-items: center;" class="flex flex-col align-center justify-center mt-4">
+                      <a href="{% if not step.completed %}javascript:void(0){% else %}/accounts/profile/{{ step.number }}{% endif %}"
+                         aria-disabled="{{step.completed }}"
+                         aria-current="{% if step.current %}step{% endif %}"
+                         class="relative w-12 h-12 sm:w-14 md:w-16 sm:h-14 md:h-16 lg:w-16 lg:h-16 flex items-center justify-center bg-white border-2 border-gray-300 rounded-full group hover:border-accent bg-accent hover:bg-accent-dark transition duration-150 ease-in-out progress-circle {% if step.completed %}completed{% elif step.current %}current{% endif %}">
+                          <span class="text-white">{{ step.number }}</span>
+                      </a>
+                      <span style="font-size: 0.9rem" class="mb-4 text-md font-small progress-text  sm:font-medium md:font-medium lg:font-medium text-gray-500">{{ step.name }}</span>
+                  </span>
+                  <span style="left:60px" class="absolute inset-0 w-full flex items-center line" aria-hidden="true">
+                      <div class="h-0.5 w-full mb-6 bg-gray-200"></div>
+                  </span>
+              </li>
+              {% endfor %}
+          </ol>
+      </nav>
+  </div>
+
+    {% if step == 1  %}
+      {%include "steps/step1.html"%}
+    {% endif %}
+
+    {% if step == 2  %}
+      {%include "steps/step2.html" %}
+    {% endif %}
+    {% if step == 3 %}
+      <form id="course-log-form" method="post" class="space-y-4">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 gap-4">
+        <!-- Input fields for step 3 -->
+        {% for form in course_log_forms %}
+        <div class="course-log">
+            <div class="mb-4">
+                <label for="{{ form.prefix }}-index_number" class="text-gray-700 font-medium block mb-2">Index Number</label>
+                <input type="text" id="{{ form.prefix }}-index_number" name="{{ form.prefix }}-index_number" class="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-1 focus:ring-blue-500" value="{{ form.instance.index_number }}">
+            </div>
+
+            <div class="mb-4">
+                <label for="{{ form.prefix }}-full_name" class="text-gray-700 font-medium block mb-2">Full Name (As Shown on ID Card)</label>
+                <input type="text" id="{{ form.prefix }}-full_name" name="{{ form.prefix }}-full_name" class="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-1 focus:ring-blue-500" value="{{ form.instance.full_name }}">
+            </div>
+
+            <div id="programme-entries-{{ forloop.counter }}" class="programme-entries bg-white shadow-md w-full p-4 mb-2 rounded-md">
+                <div class="mb-4">
+                    <label for="{{ form.prefix }}-graduate_type" class="text-gray-700 font-medium block mb-2">Graduate Type</label>
+                    <select id="{{ form.prefix }}-graduate_type" name="{{ form.prefix }}-graduate_type" class="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <option value="">Select Type</option>
+                        {% for graduate_type in graduate_types %}
+                        <option value="{{ graduate_type.id }}" {% if graduate_type.id == form.instance.graduate_type_id %}selected{% endif %}>{{ graduate_type.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="{{ form.prefix }}-programme" class="text-gray-700 font-medium block mb-2">Programme</label>
+                    <select id="{{ form.prefix }}-programme" name="{{ form.prefix }}-programme" class="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <option value="">Select Programme</option>
+                        {% for programme in programmes %}
+                        <option value="{{ programme.id }}" {% if programme.id == form.instance.programme_id %}selected{% endif %}>{{ programme.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="{{ form.prefix }}-admission_year" class="text-gray-700 font-medium block mb-2">Admission Year</label>
+                    <input type="number" id="{{ form.prefix }}-admission_year" name="{{ form.prefix }}-admission_year" min="2000" max="2050" class="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-1 focus:ring-blue-500" value="{{ form.instance.admission_year }}">
+                </div>
+
+                <div class="mb-4">
+                    <label for="{{ form.prefix }}-graduation_year" class="text-gray-700 font-medium block mb-2">Graduation Year (or Last Year)</label>
+                    <input type="number" id="{{ form.prefix }}-graduation_year" name="{{ form.prefix }}-graduation_year" min="2000" max="2050" class="w-full rounded-md border border-gray-300 py-2 px-3 focus:outline-none focus:ring-1 focus:ring-blue-500" value="{{ form.instance.graduation_year }}">
+                </div>
+
+                <!-- Hidden field for ID -->
+                <input type="hidden" name="{{ form.prefix }}-id" value=" {% if form.instance.id is NONE %}1{% else %}{{ form.instance.id }}{% endif %}">
+{#              remove button#}
+                <button type="button"  class=" remove-button inline-flex items-center px-4 py-2 bg-red-500 text-white font-medium rounded-md hover:bg-red-700 focus:ring-4 focus:ring-red-500 focus:outline-none">Remove</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button id="add-programme" type="button" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-700 focus:ring-4 focus:ring-blue-500 focus:outline-none">Add Programme</button>
+    <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-700 focus:ring-4 focus:ring-blue-500 focus:outline-none">Next</button>
+</form>
+
+
+    {% endif %}
+    {% if step == 4 %}
+    <div class="w-full mx-auto py-6">
+        <h3 class="text-2xl font-bold mb-6">Review Submission</h3>
+
+        <div class="bg-white shadow-md rounded py-6 mb-8 w-full">
+         {% if profile.profile_image %}
+                <div style="margin-left: 1.8rem" class="rounded-md flex flex-col align-start justify-center w-full">
+                    <img src="{{ profile.profile_image.url }}" alt="Profile Image" class="w-48 h-48 object-cover rounded mb-6">
+                </div>
+            {% endif %}
+            <h2 style="margin-left: 1.8rem" class="text-2xl font-semibold mb-4">Personal Information</h2>
+            <div class="info-list">
+                <div class="info-item w-full">
+                    <p>First Name:</p>
+                    <p>{{ profile.first_name }}</p>
+                </div>
+                <div class="info-item">
+                    <p>Last Name:</p>
+                    <p>{{ profile.last_name }}</p>
+                </div>
+                <div class="info-item">
+                    <p>Other Names:</p>
+                    <p>{{ profile.other_names }}</p>
+                </div>
+                <div class="info-item">
+                    <p>Email:</p>
+                    <p>{{ profile.email }}</p>
+                </div>
+                <div class="info-item">
+                    <p>Phone Number:</p>
+                    <p>{{profile.phone_number}}</p>
+                </div>
+                <div class="info-item">
+                    <p>Date of Birth:</p>
+                    <p>{{ profile.date_of_birth }}</p>
+                </div>
+                <div class="info-item">
+                        <p >Gender:</p>
+                        <p>{{ profile.gender.name }}</p>
+                </div>
+                    <div class="info-item">
+                        <p >Postal Address:</p>
+                        <p>{{ profile.postal_address }}</p>
+                    </div>
+                    <div class="info-item">
+                        <p >Residential Address:</p>
+                        <p>{{ profile.residential_address }}</p>
+                    </div>
+                    <div class="info-item">
+                        <p >Id Number:</p>
+                        <p>{{ profile.identification_number }}</p>
+                    </div>
+                    <div class="info-item">
+                        <p >Id Type:</p>
+                        <p>{{ profile.identification_type.name }}</p>
+                    </div>
+
+            </div>
+            <div style="margin: 1.8rem;" class="mb-2 p-4  rounded-md bg-gray-100">
+                {% if profile.identification_file %}
+                    <h3 class="text-xl font-medium mb-2">Identification File</h3>
+                    <a href="{{ profile.identification_file.url }}" class="text-blue-500 underline mb-6 ">View Document</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="bg-white shadow-md rounded p-6">
+            <h2 class="text-2xl font-semibold mb-4">Programme</h2>
+            <div class="space-y-4">
+                {% for log in course_logs %}
+                    <div class="bg-gray-100 py-4 px-4 rounded-md flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white flex justify-center items-center rounded-full">
+                            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </div>
+                        <div class="w-full space-y-2">
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium w-full">{{ log.index_number }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium w-full">{{ log.full_name }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium w-full">{{ log.graduate_type.name }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium w-full">{{ log.programme.name }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium w-full">{{ log.admission_year }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium w-full">{{ log.graduation_year }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <button data-action-url="{% url 'profile_submit' %}" class="open-confirmation-modal mb-4  items-center px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-700 focus:ring-4 focus:ring-blue-500 focus:outline-none" >Submit</button>
+
+    {% include 'modals/confirmation_modal.html' %}
+    {% endif %}
+</div>
+<script src="{% static 'src/script.js' %}"></script>
+{% endblock content %}

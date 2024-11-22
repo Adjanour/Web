@@ -1,0 +1,56 @@
+/* Africoda.css */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* Container with gradient background */
+/*  */
+
+/* Text container */
+.text-center {
+	text-align: center;
+	padding: 2.5rem;
+}
+
+/* Title styling */
+.banner-title {
+	font-size: 3rem; /* Default size */
+	font-weight: bold;
+	margin-bottom: 1rem;
+	transition: transform 0.3s ease-in-out; /* Smooth hover transition */
+}
+
+@media (min-width: 640px) {
+	.banner-title {
+		font-size: 4rem; /* Larger text size for bigger screens */
+	}
+}
+
+/* Hover effect to scale text */
+.hovered {
+	transform: scale(1.1);
+}
+
+/* Quote styling */
+.banner-quote {
+	font-size: 1.25rem; /* Default size */
+	font-style: italic;
+	opacity: 0;
+	animation: fadeIn 2s forwards;
+}
+
+@media (min-width: 640px) {
+	.banner-quote {
+		font-size: 1.75rem; /* Larger quote size for bigger screens */
+	}
+}
+
+/* Fade-in animation for the quote */
+@keyframes fadeIn {
+	to {
+		opacity: 1;
+	}
+}

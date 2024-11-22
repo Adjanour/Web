@@ -1,0 +1,64 @@
+<html lang="en">
+    <head>
+        <style>
+            #preview {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            #preview img {
+                width: 150px;
+                height: 150px;
+                object-fit: cover;
+                border: 2px solid #ddd;
+                border-radius: 10px;
+            }
+
+            #preview img:hover {
+                transform: scale(1.05)
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Upload and Preview Images</h1>
+        <input type="file" id="fileInput" multiple accept="image/*" />
+        <div id="preview"></div>
+
+        <script>
+            function uploadFile(event) {
+                const previewImage = document.getElementById("preview");
+                previewImage.innerHTML = ""; // Clear previous previews
+                const files = Array.from(event.target.files);
+
+                files.forEach((file) => {
+                    // Validate file size (optional: 2MB limit)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert(`${file.name} is too large! Max size is 2MB.`);
+                        return;
+                    }
+
+                    // Validate file type (although accept="image/*" helps)
+                    if (!file.type.startsWith("image/")) {
+                        alert(`${file.name} is not a valid image file.`);
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        let img = document.createElement("img");
+                        img.src = e.target.result;
+                        previewImage.appendChild(img);
+                    };
+                    reader.onerror = () => {
+                        alert(`Failed to read ${file.name}`);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            document
+                .getElementById("fileInput")
+                .addEventListener("change", uploadFile);
+        </script>
+    </body>
+</html>
